@@ -1,4 +1,8 @@
 using BookStorePerfApi.Data;
+using BookStorePerfApi.Interfaces.Commands;
+using BookStorePerfApi.Interfaces.Queries;
+using BookStorePerfApi.Repositories.Commands;
+using BookStorePerfApi.Repositories.Queries;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,6 +16,11 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddTransient<DapperContext>();
+
+#region Register Services
+builder.Services.AddScoped<IBookCommandRepository, BookCommandRepository>();
+builder.Services.AddScoped<IBookQueryRepository, BookQueryRepository>();
+#endregion
 
 var app = builder.Build();
 
