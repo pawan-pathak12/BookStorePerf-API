@@ -1,0 +1,14 @@
+bin/
+obj/
+obj/Debug
+*.dll
+*.pdb
+*.cache
+*.log
+*.user
+.vs/
+appsettings.json
+appsettings.json
+appsettings.Development.json
+appsettings.test.json
+.idea
