@@ -1,4 +1,6 @@
-﻿using BookStorePerfApi.Entities;
+﻿using AutoMapper;
+using BookStorePerfApi.DTOs.Orders;
+using BookStorePerfApi.Entities;
 using BookStorePerfApi.Interfaces.Commands;
 using BookStorePerfApi.Interfaces.Queries;
 using Microsoft.AspNetCore.Mvc;
@@ -11,13 +13,15 @@ namespace BookStorePerfApi.Controllers
     {
         private readonly IOrderCommandRepository _commandRepo;
         private readonly IOrderQueryRepository _queryRepo;
+        private readonly IMapper _mapper;
 
         public OrdersController(
             IOrderCommandRepository commandRepo,
-            IOrderQueryRepository queryRepo)
+            IOrderQueryRepository queryRepo, IMapper mapper)
         {
             _commandRepo = commandRepo;
             _queryRepo = queryRepo;
+            this._mapper = mapper;
         }
 
         [HttpGet]
@@ -43,18 +47,20 @@ namespace BookStorePerfApi.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> PlaceOrder([FromBody] Order order)
+        public async Task<IActionResult> PlaceOrder([FromBody] CreateOrderDto orderDto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
+            var order = _mapper.Map<Order>(orderDto);
             var newId = await _commandRepo.PlaceOrder(order);
             return CreatedAtAction(nameof(GetById), new { id = newId }, order);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, [FromBody] Order order)
+        public async Task<IActionResult> Update(int id, [FromBody] UpdateOrderDto orderDto)
         {
-            if (id != order.Id) return BadRequest("ID mismatch");
+            if (id != orderDto.Id) return BadRequest("ID mismatch");
+            var order = _mapper.Map<Order>(orderDto);
 
             try
             {

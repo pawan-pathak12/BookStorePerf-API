@@ -37,8 +37,8 @@ namespace BookStorePerfApi.Repositories.Queries
         public async Task<IEnumerable<Book>> GetBooksWithAuthor(string? authorName)
         {
             using var connection = _context.OpenConnection();
-            var query = "SELECT * FROM Books WHERE Author = @Author";
-            var books = await connection.QueryAsync<Book>(query, new { Author = authorName });
+            var query = "SELECT * FROM Books WHERE Name = @Name";
+            var books = await connection.QueryAsync<Book>(query, new { name = authorName });
             return books;
         }
 

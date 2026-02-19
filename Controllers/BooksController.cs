@@ -1,4 +1,6 @@
-﻿using BookStorePerfApi.Entities;
+﻿using AutoMapper;
+using BookStorePerfApi.DTOs.Books;
+using BookStorePerfApi.Entities;
 using BookStorePerfApi.Interfaces.Commands;
 using BookStorePerfApi.Interfaces.Queries;
 using Microsoft.AspNetCore.Mvc;
@@ -11,13 +13,15 @@ namespace BookStorePerfApi.Controllers
     {
         private readonly IBookCommandRepository _commandRepo;
         private readonly IBookQueryRepository _queryRepo;
+        private readonly IMapper _mapper;
 
         public BooksController(
             IBookCommandRepository commandRepo,
-            IBookQueryRepository queryRepo)
+            IBookQueryRepository queryRepo, IMapper mapper)
         {
             _commandRepo = commandRepo;
             _queryRepo = queryRepo;
+            this._mapper = mapper;
         }
 
         [HttpGet]
@@ -43,18 +47,19 @@ namespace BookStorePerfApi.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] Book book)
+        public async Task<IActionResult> Create([FromBody] CreateBookDto bookDto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
-
+            var book = _mapper.Map<Book>(bookDto);
             var newId = await _commandRepo.AddAsync(book);
             return CreatedAtAction(nameof(GetById), new { id = newId }, book);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, [FromBody] Book book)
+        public async Task<IActionResult> Update(int id, [FromBody] Book bookDto)
         {
-            if (id != book.Id) return BadRequest("ID mismatch");
+            if (id != bookDto.Id) return BadRequest("ID mismatch");
+            var book = _mapper.Map<Book>(bookDto);
 
             try
             {

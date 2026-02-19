@@ -29,7 +29,7 @@ namespace BookStorePerfApi.Repositories.Queries
             using var connection = _context.OpenConnection();
 
             var orders = await connection.QueryAsync<Order>(
-                @"SELECT Id, CustomerId, OrderDate, TotalAmount, Status, ShippingAddress /* etc */
+                @"SELECT Id, CustomerId, OrderDate
               FROM Orders
               ORDER BY OrderDate DESC");
 
@@ -41,7 +41,7 @@ namespace BookStorePerfApi.Repositories.Queries
             using var connection = _context.OpenConnection();
 
             var orders = await connection.QueryAsync<Order>(
-                @"SELECT Id, CustomerId, OrderDate, TotalAmount, Status, ShippingAddress /* etc */
+                @"SELECT Id, CustomerId, OrderDate
               FROM Orders
               WHERE CustomerId = @CustomerId
               ORDER BY OrderDate DESC",
